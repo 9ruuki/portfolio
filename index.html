@@ -1,10 +1,956 @@
-<html>
-  <head>
-    <title>9ruuki's Portfolio</title>
-  </head>
-  <body>
-    <h1>Hello World!</h1>
-    <p>This is 9ruuki's Portfolio</p>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rubén Domínguez | Data Analyst & BI Developer</title>
     
-  </body>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Font Awesome (para logos de herramientas) -->
+    <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    referrerpolicy="no-referrer"
+    />
+
+    
+    <!-- Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/FontLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/geometries/TextGeometry.js"></script>
+    
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollToPlugin.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'luxury-dark': '#011a14',
+                        'luxury-green': '#064e3b',
+                        'luxury-light': '#34d399',
+                        'luxury-accent': '#10b981',
+                        'card-bg': 'rgba(6, 78, 59, 0.3)'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #011a14;
+            color: #e2e8f0;
+            overflow-x: hidden;
+            cursor: none;
+        }
+        
+        .hover-target, a, button {
+            cursor: none !important; 
+        }
+
+        ::-webkit-scrollbar {
+            width: 0px;
+            background: transparent;
+        }
+
+        #cursor {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 20px;
+            height: 20px;
+            border: 2px solid white;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            mix-blend-mode: difference;
+            transition: width 0.3s, height 0.3s, background-color 0.3s;
+        }
+
+        #cursor.hovered {
+            width: 50px;
+            height: 50px;
+            background-color: white;
+            border-color: transparent;
+            opacity: 0.8;
+        }
+
+        .horizontal-scroll-wrapper {
+            display: flex;
+            flex-direction: row;
+            width: 400vw;
+            height: 100vh;
+            will-change: transform;
+        }
+
+        .section {
+            width: 100vw;
+            height: 100vh;
+            flex-shrink: 0;
+            padding: 2rem;
+            box-sizing: border-box;
+            overflow-y: auto; 
+            position: relative;
+        }
+
+        @media (max-width: 768px) {
+            .horizontal-scroll-wrapper {
+                flex-direction: column;
+                width: 100vw;
+                height: auto;
+                transform: none !important;
+            }
+            .section {
+                height: auto;
+                min-height: 100vh;
+                padding-bottom: 4rem;
+            }
+            body {
+                cursor: auto;
+            }
+            #cursor {
+                display: none;
+            }
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 1rem;
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+        
+        .glass-card:hover {
+            border-color: rgba(16, 185, 129, 0.5);
+            transform: translateY(-5px);
+        }
+
+        .experience-highlight {
+            border-left: 2px solid #10b981;
+            background: linear-gradient(90deg, rgba(6, 78, 59, 0.8) 0%, rgba(1, 26, 20, 0) 100%);
+            padding: 1rem;
+            margin-top: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+        }
+
+        .nav-dot {
+            transition: all 0.3s ease;
+        }
+        .nav-dot.active {
+            background-color: #10b981;
+            transform: scale(1.5);
+        }
+
+        /* Contenedor de la esfera 3D */
+        #canvas-container {
+            width: 100%;
+            max-width: 900px;
+            height: 420px;
+            margin: 0 auto;
+        }
+
+        @media (min-width: 1024px) {
+            #canvas-container {
+                height: 520px;
+            }
+        }
+
+        /* Idiomas */
+        .lang-en {
+            display: none;
+        }
+
+        body.lang-en-active .lang-es {
+            display: none;
+        }
+
+        body.lang-en-active .lang-en {
+            display: initial;
+        }
+
+                /* Parpadeo suave para el texto de ayuda de la esfera */
+        .blink-soft {
+            animation: blink-soft 1.6s ease-in-out infinite alternate;
+        }
+
+        @keyframes blink-soft {
+            0% {
+                opacity: 1;
+                scale: 1.05;
+            }
+            100% {
+                opacity: 0.35;
+                scale: 1;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Custom Cursor -->
+    <div id="cursor"></div>
+
+    <!-- Language Switcher -->
+    <div class="fixed top-6 right-6 z-50 flex items-center gap-2 bg-black/30 backdrop-blur-md px-3 py-2 rounded-full border border-white/10 text-xs">
+        <button id="btnLangEs" class="px-2 py-1 rounded-full font-semibold bg-luxury-accent text-luxury-dark hover-target">
+            ES
+        </button>
+        <button id="btnLangEn" class="px-2 py-1 rounded-full font-semibold text-gray-300 hover-target">
+            EN
+        </button>
+    </div>
+
+    <!-- Navigation Indicator -->
+    <nav class="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-50 flex gap-6 bg-black/30 backdrop-blur-md px-6 py-3 rounded-full border border-white/10">
+        <button onclick="scrollToSection(0)" class="nav-dot w-3 h-3 rounded-full bg-white/30 hover-target" aria-label="About"></button>
+        <button onclick="scrollToSection(1)" class="nav-dot w-3 h-3 rounded-full bg-white/30 hover-target" aria-label="Experience"></button>
+        <button onclick="scrollToSection(2)" class="nav-dot w-3 h-3 rounded-full bg-white/30 hover-target" aria-label="Skills"></button>
+        <button onclick="scrollToSection(3)" class="nav-dot w-3 h-3 rounded-full bg-white/30 hover-target" aria-label="Contact"></button>
+    </nav>
+
+    <!-- Main Content Wrapper -->
+    <div class="horizontal-scroll-wrapper" id="scrollWrapper">
+
+        <!-- SECTION 1: ABOUT -->
+        <section class="section flex items-center justify-center relative">
+            <div class="max-w-4xl w-full z-10 px-4">
+                <p class="text-luxury-light font-semibold mb-4 tracking-widest text-sm uppercase animate-fade-in">
+                    <span class="lang-es">Portfolio</span>
+                    <span class="lang-en">Portfolio</span>
+                </p>
+                <h1 class="text-6xl md:text-8xl font-extrabold mb-6 leading-tight text-white hover-target">
+                    Rubén <br> Domínguez
+                </h1>
+                <div class="h-1 w-24 bg-luxury-accent mb-8"></div>
+                <h2 class="text-2xl md:text-3xl text-gray-300 mb-6 font-light">
+                    <span class="lang-es">
+                        Analista de Datos &amp; <span class="text-luxury-accent">Desarrollador BI</span>
+                    </span>
+                    <span class="lang-en">
+                        Data Analyst &amp; <span class="text-luxury-accent">BI Developer</span>
+                    </span>
+                </h2>
+                <p class="text-gray-400 text-lg md:text-xl leading-relaxed max-w-2xl glass-card p-6">
+                    <span class="lang-es">
+                        Perfil técnico con un fuerte enfoque en el análisis de datos y la automatización de procesos. 
+                        Ha desarrollado una gran autonomía aplicando tecnologías punteras como 
+                        <span class="text-white font-bold">SQL, Python y PowerBI</span> para transformar datos complejos en decisiones estratégicas,
+                        con un enfoque en la mejora de la rentabilidad y la eficiencia operativa.
+                    </span>
+                    <span class="lang-en">
+                        Technical profile with a strong focus on data analysis and process automation.
+                        He works with cutting-edge technologies such as 
+                        <span class="text-white font-bold">SQL, Python and Power BI</span> to turn complex data into strategic decisions,
+                        always aiming to improve profitability and operational efficiency.
+                    </span>
+                </p>
+            </div>
+            <div class="absolute right-0 top-0 w-1/3 h-full bg-gradient-to-l from-luxury-green/20 to-transparent pointer-events-none"></div>
+        </section>
+
+        <!-- SECTION 2: EXPERIENCE -->
+        <section class="section flex flex-col justify-center">
+            <div class="max-w-7xl mx-auto w-full h-full flex flex-col justify-center">
+                <h3 class="text-4xl font-bold mb-8 text-white px-4">
+                    <span class="lang-es">Trayectoria <span class="text-luxury-accent">Profesional</span></span>
+                    <span class="lang-en">Professional <span class="text-luxury-accent">Experience</span></span>
+                </h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 h-auto overflow-y-auto px-4 pb-20">
+                    
+                    <!-- Exp 1 -->
+                    <div class="glass-card p-6 hover-target flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-start mb-4">
+                                <h4 class="text-xl font-bold text-white">
+                                    <span class="lang-es">Analista de datos &amp; Desarrollador BI</span>
+                                    <span class="lang-en">Data Analyst &amp; BI Developer</span>
+                                </h4>
+                                <span class="text-xs bg-luxury-green text-emerald-300 px-2 py-1 rounded">
+                                    <span class="lang-es">2025 - Actualidad</span>
+                                    <span class="lang-en">2025 - Present</span>
+                                </span>
+                            </div>
+                            <h5 class="text-emerald-400 mb-2">
+                                <span class="lang-es">Ibergroup 2005 Empresarial</span>
+                                <span class="lang-en">Ibergroup 2005 Empresarial</span>
+                            </h5>
+                            <p class="text-gray-400 text-sm mb-4">
+                                <span class="lang-es">
+                                    Desarrollo de aplicaciones ETL y cuadros de mando. Transformación de datos en KPIs para socios y proveedores.
+                                </span>
+                                <span class="lang-en">
+                                    Development of ETL applications and dashboards. Conversion of raw data into actionable KPIs for partners and suppliers.
+                                </span>
+                            </p>
+                            
+                            <div class="experience-highlight mt-4 rounded-lg p-3">
+                                <i data-lucide="trending-up" class="w-6 h-6 text-white mb-2"></i>
+                                <h4 class="text-3xl font-extrabold text-white leading-none">+15%</h4>
+                                <p class="text-emerald-100 text-xs mt-1">
+                                    <span class="lang-es">
+                                        Incremento de beneficios anual por optimización operativa.
+                                    </span>
+                                    <span class="lang-en">
+                                        Annual profit increase driven by operational optimisation.
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4 mt-4 text-gray-400 items-center flex-wrap">
+                            <!-- Python -->
+                            <span class="flex items-center gap-2">
+                                <i class="fa-brands fa-python text-[#3776AB] text-lg" title="Python"></i>
+                                <span class="text-xs"></span>
+                            </span>
+
+                            <!-- MySQL -->
+                            <span class="flex items-center gap-2">
+                                <i class="fa-solid fa-database text-[#4479A1] text-lg" title="MySQL"></i>
+                                <span class="text-xs"></span>
+                            </span>
+
+                            <!-- Excel -->
+                            <span class="flex items-center gap-2">
+                                <i class="fa-regular fa-file-excel text-[#217346] text-lg" title="Excel"></i>
+                                <span class="text-xs"></span>
+                            </span>
+
+                            <!-- Power BI -->
+                            <span class="flex items-center gap-2">
+                                <i class="fa-solid fa-chart-column text-[#F2C811] text-lg" title="Power BI"></i>
+                                <span class="text-xs"></span>
+                            </span>
+                        </div>
+
+
+                    </div>
+
+                    <!-- Exp 2 -->
+                    <div class="glass-card p-6 hover-target flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-start mb-4">
+                                <h4 class="text-xl font-bold text-white">
+                                    <span class="lang-es">Administrador de Bases de Datos</span>
+                                    <span class="lang-en">Database Administrator</span>
+                                </h4>
+                                <span class="text-xs bg-gray-800 text-gray-300 px-2 py-1 rounded">
+                                    <span class="lang-es">2023 - Actualidad</span>
+                                    <span class="lang-en">2023 - Present</span>
+                                </span>
+                            </div>
+                            <h5 class="text-emerald-400 mb-2">
+                                <span class="lang-es">Ibergroup 2005 Empresarial</span>
+                                <span class="lang-en">Ibergroup 2005 Empresarial</span>
+                            </h5>
+                            <ul class="text-gray-400 text-sm space-y-2 list-disc list-inside">
+                                <li>
+                                    <span class="lang-es">Liderazgo de la migración a modelos OpenSource modernos.</span>
+                                    <span class="lang-en">Lead the migration to modern open-source database models.</span>
+                                </li>
+                                <li>
+                                    <span class="lang-es">Rediseño por completo el modelo de BBDD.</span>
+                                    <span class="lang-en">Redesign of the database model from scratch.</span>
+                                </li>
+                                <li>
+                                    <span class="lang-es">Simplificación de la visualización de datos para equipos no técnicos.</span>
+                                    <span class="lang-en">Simplified data visualisation for non-technical teams.</span>
+                                </li>
+                            </ul>
+
+                            <div class="experience-highlight mt-4 rounded-lg p-3">
+                                <i data-lucide="activity" class="w-6 h-6 text-white mb-2"></i>
+                                <h4 class="text-3xl font-extrabold text-white leading-none">-40%</h4>
+                                <p class="text-emerald-100 text-xs mt-1">
+                                    <span class="lang-es">
+                                        Reducción en un 40% los tiempos de consulta tras la nueva arquitectura de base de datos.
+                                    </span>
+                                    <span class="lang-en">
+                                        Reduced query times by 40% after the new database architecture.
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4 mt-4 text-gray-400 items-center flex-wrap">
+                            <!-- MySQL -->
+                            <span class="flex items-center gap-2">
+                                <i class="fa-solid fa-database text-[#4479A1] text-lg" title="MySQL"></i>
+                                <span class="text-xs"></span>
+                            </span>
+
+                            <!-- Excel -->
+                            <span class="flex items-center gap-2">
+                                <i class="fa-regular fa-file-excel text-[#217346] text-lg" title="Excel"></i>
+                                <span class="text-xs"></span>
+                            </span>
+
+                            <!-- Conectores (genérico) -->
+                            <span class="flex items-center gap-2">
+                                <i class="fa-solid fa-plug text-[#F97316] text-lg" title="Conectores / Integraciones"></i>
+                                <span class="text-xs"></span>
+                            </span>
+
+                            <!-- Microsoft Access -->
+                            <span class="flex items-center gap-2">
+                                <i class="fa-solid fa-table text-[#A4373A] text-lg" title="Microsoft Access"></i>
+                                <span class="text-xs"></span>
+                            </span>
+                        </div>
+
+                    </div>
+
+                    <!-- Exp 3 -->
+                    <div class="glass-card p-6 hover-target flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-start mb-4">
+                                <h4 class="text-xl font-bold text-white">
+                                    <span class="lang-es">Adm. de Sistemas y Bases de Datos (Prácticas)</span>
+                                    <span class="lang-en">Database &amp; Systems Admin (Internship)</span>
+                                </h4>
+                                <span class="text-xs bg-gray-800 text-gray-300 px-2 py-1 rounded">
+                                    <span class="lang-es">Mar 2023 - May 2023</span>
+                                    <span class="lang-en">Mar 2023 - May 2023</span>
+                                </span>
+                            </div>
+                            <h5 class="text-emerald-400 mb-2">
+                                <span class="lang-es">TabulaMedia (Wrocław, Polonia)</span>
+                                <span class="lang-en">TabulaMedia (Wrocław, Poland)</span>
+                            </h5>
+                            <ul class="text-gray-400 text-sm space-y-2 list-disc list-inside">
+                                <li>
+                                    <span class="lang-es">Soporte técnico y mantenimiento de entornos IT críticos.</span>
+                                    <span class="lang-en">Provided technical support and maintained critical IT environments.</span>
+                                </li>
+                                <li>
+                                    <span class="lang-es">Gestión de migraciones de datos y dominios.</span>
+                                    <span class="lang-en">Managed data and domain migrations.</span>
+                                </li>
+                                <li>
+                                    <span class="lang-es">Mantenimiento de sitios web con CMS Joomla y gestión de incidencias.</span>
+                                    <span class="lang-en">Maintained websites with Joomla CMS and handled incidents.</span>
+                                </li>
+                            </ul>
+
+                            <!-- KPI destacado simplificado -->
+                            <div class="experience-highlight mt-4 rounded-lg p-3">
+                                <i data-lucide="globe-2" class="w-6 h-6 text-white mb-2"></i>
+                                <h4 class="text-xl font-extrabold text-white leading-snug">
+                                    <span class="lang-es">Colaboración con entornos internacionales</span>
+                                    <span class="lang-en">Collaborated with international teams</span>
+                                </h4>
+                                <p class="text-emerald-100 text-xs mt-1">
+                                    <span class="lang-es">
+                                        Coordinación de trabajo con equipos y clientes de distintos países y husos horarios.
+                                    </span>
+                                    <span class="lang-en">
+                                        Coordinated work with teams and clients from different countries and time zones.
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4 mt-4 text-gray-400 items-center flex-wrap">
+                            <!-- Globo terráqueo -->
+                            <span class="flex items-center gap-2">
+                                <i class="fa-solid fa-globe text-[#38BDF8] text-lg" title="Entorno internacional"></i>
+                                <span class="text-xs"></span>
+                            </span>
+
+                            <!-- Trabajo en equipo -->
+                            <span class="flex items-center gap-2">
+                                <i class="fa-solid fa-people-group text-[#22C55E] text-lg" title="Trabajo en equipo"></i>
+                                <span class="text-xs"></span>
+                            </span>
+
+                            <!-- Web -->
+                            <span class="flex items-center gap-2">
+                                <i class="fa-solid fa-window-maximize text-[#E5E7EB] text-lg" title="Web / CMS"></i>
+                                <span class="text-xs"></span>
+                            </span>
+
+                            <!-- Incidencias -->
+                            <span class="flex items-center gap-2">
+                                <i class="fa-solid fa-triangle-exclamation text-[#F97316] text-lg" title="Incidencias"></i>
+                                <span class="text-xs"></span>
+                            </span>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: SKILLS -->
+        <section class="section flex flex-col items-center justify-center relative overflow-hidden">
+            <!-- Texto arriba, esfera debajo -->
+            <div class="z-10 w-full max-w-4xl mx-auto px-6 text-center mb-8">
+                <h3 class="text-5xl font-bold mb-6 text-white">
+                    <span class="lang-es">Soft <span class="text-luxury-accent">Skills</span></span>
+                    <span class="lang-en">Soft <span class="text-luxury-accent">Skills</span></span>
+                </h3>
+                <p class="text-gray-300 mb-4 text-lg">
+                    <span class="lang-es">
+                        Explora la esfera: cada giro revela qué puedo aportar a un equipo.
+                    </span>
+                    <span class="lang-en">
+                        Explore the sphere: each rotation clearly reveals what I can bring to the team.
+                    </span>
+                </p>
+                <p class="text-sm text-gray-500 blink-soft">
+                    <span class="lang-es">
+                        Arrastra la esfera para descubrir nuevas habilidades en la parte frontal.
+                    </span>
+                    <span class="lang-en">
+                        Drag the sphere to discover new skills on the front side.
+                    </span>
+                </p>
+
+            </div>
+
+            <!-- Contenedor de la esfera 3D -->
+            <div id="canvas-container" class="hover-target"></div>
+        </section>
+
+        <!-- SECTION 4: CONTACT -->
+        <section class="section flex items-center justify-center bg-gradient-to-br from-luxury-dark to-black">
+            <div class="text-center max-w-2xl px-6">
+                <h3 class="text-4xl md:text-6xl font-bold text-white mb-8">
+                    <span class="lang-es">¿Hablamos?</span>
+                    <span class="lang-en">Shall we talk?</span>
+                </h3>
+                <p class="text-xl text-gray-400 mb-12">
+                    <span class="lang-es">
+                       Disponible para nuevas oportunidades donde pueda aportar valor a través de los datos. Contáctame por email o LinkedIn.
+                    </span>
+                    <span class="lang-en">
+                        Open to new opportunities where I can create impact through data. Get in touch via email or LinkedIn.
+                    </span>
+                </p>
+                
+                <div class="flex flex-col md:flex-row gap-6 justify-center w-full">
+                    <a href="mailto:9ruuki@gmail.com" target="_blank" class="hover-target group relative px-8 py-4 bg-transparent border border-white text-white font-bold rounded-full overflow-hidden transition-all hover:border-luxury-accent">
+                        <span class="relative z-10 flex items-center gap-2 group-hover:text-luxury-dark transition-colors">
+                            <i data-lucide="mail"></i> 
+                            <span class="lang-es">Enviar Email</span>
+                            <span class="lang-en">Send Email</span>
+                        </span>
+                        <div class="absolute inset-0 bg-luxury-accent transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300"></div>
+                    </a>
+
+                    <a href="https://linkedin.com/in/9ruuki" target="_blank" class="hover-target group relative px-8 py-4 bg-luxury-accent border border-luxury-accent text-luxury-dark font-bold rounded-full overflow-hidden transition-all">
+                        <span class="relative z-10 flex items-center gap-2 group-hover:text-white transition-colors">
+                            <i data-lucide="linkedin"></i> LinkedIn</span>
+                        <div class="absolute inset-0 bg-luxury-dark transform scale-x-0 group-hover:scale-x-100 transition-transform origin-right duration-300"></div>
+                    </a>
+                </div>
+                
+                <footer class="mt-20 text-gray-600 text-sm">
+                    <p>
+                        <span class="lang-es">&copy; 2025 Rubén Domínguez. Madrid, España.</span>
+                        <span class="lang-en">&copy; 2025 Rubén Domínguez. Madrid, Spain.</span>
+                    </p>
+                </footer>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- JAVASCRIPT -->
+    <script>
+        // Icons
+        lucide.createIcons();
+
+        // Language state
+        let currentLang = localStorage.getItem('lang') || 'es';
+        let threeLanguageUpdater = null;
+
+        const btnLangEs = document.getElementById('btnLangEs');
+        const btnLangEn = document.getElementById('btnLangEn');
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            document.body.classList.toggle('lang-en-active', lang === 'en');
+            localStorage.setItem('lang', lang);
+
+            if (btnLangEs && btnLangEn) {
+                if (lang === 'es') {
+                    btnLangEs.classList.add('bg-luxury-accent', 'text-luxury-dark');
+                    btnLangEs.classList.remove('text-gray-300');
+                    btnLangEn.classList.remove('bg-luxury-accent', 'text-luxury-dark');
+                    btnLangEn.classList.add('text-gray-300');
+                } else {
+                    btnLangEn.classList.add('bg-luxury-accent', 'text-luxury-dark');
+                    btnLangEn.classList.remove('text-gray-300');
+                    btnLangEs.classList.remove('bg-luxury-accent', 'text-luxury-dark');
+                    btnLangEs.classList.add('text-gray-300');
+                }
+            }
+
+            // actualizar textos 3D si existe la esfera
+            if (typeof threeLanguageUpdater === 'function') {
+                threeLanguageUpdater(lang);
+            }
+        }
+
+        if (btnLangEs && btnLangEn) {
+            btnLangEs.addEventListener('click', () => setLanguage('es'));
+            btnLangEn.addEventListener('click', () => setLanguage('en'));
+        }
+
+        // Inicializar idioma al cargar
+        setLanguage(currentLang);
+
+        // Custom Cursor
+        const cursor = document.getElementById('cursor');
+        const hoverTargets = document.querySelectorAll('.hover-target, a, button');
+
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+        });
+
+        hoverTargets.forEach(target => {
+            target.addEventListener('mouseenter', () => cursor.classList.add('hovered'));
+            target.addEventListener('mouseleave', () => cursor.classList.remove('hovered'));
+        });
+
+        // Horizontal / Vertical navigation
+        const wrapper = document.getElementById('scrollWrapper');
+        const dots = document.querySelectorAll('.nav-dot');
+        const sections = document.querySelectorAll('.section');
+        let currentSectionIndex = 0;
+        const totalSections = sections.length;
+        let isScrolling = false;
+
+        function updateDots(index) {
+            dots.forEach(dot => dot.classList.remove('active'));
+            if (dots[index]) dots[index].classList.add('active');
+        }
+
+        updateDots(0);
+
+        window.scrollToSection = (index) => {
+            if (window.innerWidth < 768) {
+                sections[index].scrollIntoView({ behavior: 'smooth' });
+            } else {
+                currentSectionIndex = index;
+                gsap.to(wrapper, {
+                    x: -100 * currentSectionIndex + 'vw',
+                    duration: 1,
+                    ease: 'power3.out',
+                    onComplete: () => { isScrolling = false; }
+                });
+            }
+            updateDots(index);
+        };
+
+        // Wheel horizontal navigation (desktop)
+        window.addEventListener('wheel', (e) => {
+            if (window.innerWidth >= 768) {
+                if (isScrolling) return;
+
+                if (e.deltaY > 0) {
+                    if (currentSectionIndex < totalSections - 1) {
+                        currentSectionIndex++;
+                        window.scrollToSection(currentSectionIndex);
+                        isScrolling = true;
+                        setTimeout(() => isScrolling = false, 1000);
+                    }
+                } else {
+                    if (currentSectionIndex > 0) {
+                        currentSectionIndex--;
+                        window.scrollToSection(currentSectionIndex);
+                        isScrolling = true;
+                        setTimeout(() => isScrolling = false, 1000);
+                    }
+                }
+            }
+        });
+
+        // Observer para mantener el índice sincronizado en todo momento (desktop y móvil)
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const index = Array.from(sections).indexOf(entry.target);
+                        if (index !== -1) {
+                            currentSectionIndex = index;
+                            updateDots(index);
+                        }
+                    }
+                });
+            },
+            {
+                threshold: 0.6
+            }
+        );
+
+        sections.forEach(section => observer.observe(section));
+
+        // Three.js esfera de Soft Skills (drag only, sencilla y bilingüe)
+        function initThreeJS() {
+            const container = document.getElementById('canvas-container');
+            if (!container) return;
+
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(
+                75,
+                container.clientWidth / container.clientHeight,
+                0.1,
+                1000
+            );
+            const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            container.appendChild(renderer.domElement);
+
+            const sphereGeo = new THREE.IcosahedronGeometry(4, 2);
+            const sphereMat = new THREE.MeshBasicMaterial({ 
+                color: 0x34d399,
+                wireframe: true,
+                transparent: true,
+                opacity: 0.1 
+            });
+            const sphere = new THREE.Mesh(sphereGeo, sphereMat);
+            scene.add(sphere);
+
+            camera.position.z = 8;
+
+            // Skills sencillos, pensados para que de un vistazo se vea el perfil
+            const skillData = [
+                { es: "Analítico",          en: "Analytical",       color: 0x10b981 },
+                { es: "Autodidacta",        en: "Self-taught",      color: 0xffffff },
+                { es: "Resolutivo",         en: "Problem-solver",   color: 0x34d399 },
+                { es: "Trabajo en equipo",  en: "Team player",      color: 0xffffff },
+                { es: "Autónomo",           en: "Autonomous",       color: 0x10b981 },
+                { es: "Data-driven",        en: "Data-driven",      color: 0xffffff },
+                { es: "Curioso",            en: "Curious",          color: 0x34d399 },
+                { es: "Comunicativo",       en: "Communicative",    color: 0xffffff },
+                { es: "Ordenado",           en: "Organised",        color: 0x10b981 },
+                { es: "Negocio",            en: "Business-minded",  color: 0xffffff }
+            ];
+
+            const skillObjects = [];
+            const radius = 4.4; // justo por fuera de la esfera
+
+            // Genera una textura simple con el texto centrado
+            function makeLabelTexture(text) {
+                const canvas = document.createElement('canvas');
+                canvas.width = 1024;
+                canvas.height = 256;
+                const ctx = canvas.getContext('2d');
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = '#ffffff';
+                ctx.textBaseline = 'middle';
+
+                let fontSize = 88;
+                ctx.font = `bold ${fontSize}px Inter`;
+                let textWidth = ctx.measureText(text).width;
+
+                const maxWidth = canvas.width - 160;
+                if (textWidth > maxWidth) {
+                    const scale = maxWidth / textWidth;
+                    fontSize = fontSize * scale;
+                    ctx.font = `bold ${fontSize}px Inter`;
+                    textWidth = ctx.measureText(text).width;
+                }
+
+                const x = (canvas.width - textWidth) / 2;
+                const y = canvas.height / 2;
+                ctx.fillText(text, x, y);
+
+                const texture = new THREE.CanvasTexture(canvas);
+                texture.needsUpdate = true;
+                return texture;
+            }
+
+            // Distribución automática alrededor de la esfera (tipo "wrap" 360º) usando un patrón tipo Fibonacci
+            const goldenAngle = Math.PI * (3 - Math.sqrt(5));
+
+            skillData.forEach((skill, index) => {
+                const skillContainer = new THREE.Object3D();
+
+                const label = currentLang === 'en' ? skill.en : skill.es;
+                const texture = makeLabelTexture(label);
+
+                const spriteMaterial = new THREE.SpriteMaterial({ 
+                    map: texture,
+                    color: 0xffffff,
+                    transparent: true,
+                    opacity: 0.9
+                });
+
+                const sprite = new THREE.Sprite(spriteMaterial);
+                // tamaño moderado para que la palabra quede limpia
+                sprite.scale.set(4, 1.1, 1);
+                sprite.position.set(0, 0, 0);
+                skillContainer.add(sprite);
+
+                // Distribución en la esfera
+                const t = skillData.length > 1 ? index / (skillData.length - 1) : 0.5;
+                const y = 1 - 2 * t;               // de 1 a -1
+                const rXY = Math.sqrt(1 - y * y);  // radio en plano XZ
+                const theta = goldenAngle * index;
+                const x = Math.cos(theta) * rXY;
+                const z = Math.sin(theta) * rXY;
+
+                const pos = new THREE.Vector3(x, y, z).multiplyScalar(radius);
+                skillContainer.position.copy(pos);
+
+                sphere.add(skillContainer);
+                skillObjects.push({ container: skillContainer, sprite, data: skill });
+            });
+
+            // Drag controls
+            let isDraggingSphere = false;
+            let prevMouse = { x: 0, y: 0 };
+
+            const onMouseDown = (event) => {
+                isDraggingSphere = true;
+                prevMouse.x = event.clientX;
+                prevMouse.y = event.clientY;
+            };
+
+            const onMouseMove = (event) => {
+                if (!isDraggingSphere) return;
+                const deltaX = event.clientX - prevMouse.x;
+                const deltaY = event.clientY - prevMouse.y;
+                const rotationSpeed = 0.005;
+
+                sphere.rotation.y += deltaX * rotationSpeed;
+                sphere.rotation.x += deltaY * rotationSpeed;
+                sphere.rotation.x = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, sphere.rotation.x));
+
+                prevMouse.x = event.clientX;
+                prevMouse.y = event.clientY;
+            };
+
+            const onMouseUp = () => {
+                isDraggingSphere = false;
+            };
+
+            container.addEventListener('mousedown', onMouseDown);
+            container.addEventListener('mousemove', onMouseMove);
+            container.addEventListener('mouseup', onMouseUp);
+            container.addEventListener('mouseleave', onMouseUp);
+
+            // Touch
+            container.addEventListener('touchstart', (event) => {
+                if (event.touches.length === 1) {
+                    isDraggingSphere = true;
+                    prevMouse.x = event.touches[0].clientX;
+                    prevMouse.y = event.touches[0].clientY;
+                }
+            }, { passive: false });
+
+            container.addEventListener('touchmove', (event) => {
+                if (!isDraggingSphere || event.touches.length !== 1) return;
+                event.preventDefault();
+                const touch = event.touches[0];
+                const deltaX = touch.clientX - prevMouse.x;
+                const deltaY = touch.clientY - prevMouse.y;
+                const rotationSpeed = 0.005;
+
+                sphere.rotation.y += deltaX * rotationSpeed;
+                sphere.rotation.x += deltaY * rotationSpeed;
+                sphere.rotation.x = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, sphere.rotation.x));
+
+                prevMouse.x = touch.clientX;
+                prevMouse.y = touch.clientY;
+            }, { passive: false });
+
+            container.addEventListener('touchend', () => {
+                isDraggingSphere = false;
+            });
+
+            // Animación: solo render y visibilidad cuando la palabra está bien de frente
+            function animate() {
+                requestAnimationFrame(animate);
+
+                const worldPos = new THREE.Vector3();
+
+                const THRESHOLD    = 0.7;   // ya lo tenías así
+                const TEXT_SCALE_X = 4;
+                const TEXT_SCALE_Y = 1.1;
+
+                const DOT_SCALE    = 0.5;   // ⬅️ antes 0.25, ahora mucho más grande
+                const DOT_OPACITY  = 1;   // ⬅️ antes 0.6, ahora casi opaco
+
+                skillObjects.forEach(obj => {
+                    obj.container.getWorldPosition(worldPos);
+                    const r = worldPos.length();
+                    const cosAlpha = worldPos.z / r;
+
+                    if (cosAlpha > THRESHOLD) {
+                        // Texto grande y blanco cuando está al frente
+                        obj.sprite.scale.set(TEXT_SCALE_X, TEXT_SCALE_Y, 1);
+                        obj.sprite.material.opacity = 1;
+                        obj.sprite.material.color.setHex(0xffffff);
+                    } else {
+                        // Punto visible cuando no está al frente
+                        obj.sprite.scale.set(DOT_SCALE, DOT_SCALE, 1);
+                        obj.sprite.material.opacity = DOT_OPACITY;
+                        // usa el color propio del skill para que destaque
+                        obj.sprite.material.color.setHex(obj.data.color);
+                    }
+                });
+
+                renderer.render(scene, camera);
+            }
+
+
+
+            animate();
+
+            // Función para actualizar idioma de los textos 3D
+            function updateSkillLanguage(lang) {
+                skillObjects.forEach(obj => {
+                    const label = lang === 'en' ? obj.data.en : obj.data.es;
+                    const newTexture = makeLabelTexture(label);
+                    obj.sprite.material.map.dispose();
+                    obj.sprite.material.map = newTexture;
+                    obj.sprite.material.needsUpdate = true;
+                    obj.sprite.scale.set(4, 1.1, 1);
+                });
+            }
+
+            // Exponer al exterior
+            threeLanguageUpdater = updateSkillLanguage;
+
+            // Ajustar al idioma actual por si se abre en EN
+            updateSkillLanguage(currentLang);
+
+            // Resize
+            window.addEventListener('resize', () => {
+                if (window.innerWidth < 768) return;
+                camera.aspect = container.clientWidth / container.clientHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(container.clientWidth, container.clientHeight);
+            });
+        }
+
+        window.onload = function() {
+            if (window.innerWidth >= 768) {
+                initThreeJS();
+            }
+        };
+    </script>
+</body>
 </html>
